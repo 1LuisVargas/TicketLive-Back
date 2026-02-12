@@ -24,9 +24,11 @@ async function bootstrap() {
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-  const FRONTEND_URL = process.env.FRONTEND_URL || process.env.FRONT_URL!;
-
-  const allowedOrigins = [FRONTEND_URL].filter(Boolean);
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'http://localhost:3005',
+    'https://ticket-live-front.vercel.app',
+  ].filter(Boolean);
 
   app.enableCors({
     origin: (origin, callback) => {
