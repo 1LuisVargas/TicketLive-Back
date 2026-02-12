@@ -209,7 +209,7 @@ export class AuthController {
       process.env.FRONT_URL ||
       'http://localhost:3005';
 
-    return res.redirect(`${frontendUrl}/auth`);
+    return res.redirect(`${frontendUrl}/`);
   }
 
   @ApiOperation({
