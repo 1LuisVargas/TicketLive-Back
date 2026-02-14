@@ -105,6 +105,12 @@ export class CartPaymentService {
       body: preferenceData,
     });
 
+    const mode = this.configService.get<string>("MP_MODE");
+
+    console.log("MP_MODE:", mode);
+    console.log("init_point:", preference.init_point);
+    console.log("sandbox_init_point:", preference.sandbox_init_point);
+
     return preference.init_point;
   }
 }
