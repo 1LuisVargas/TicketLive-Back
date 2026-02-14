@@ -95,7 +95,8 @@ export class CartPaymentService {
         failure: this.configService.get<string>("MP_FAILURE_URL")!,
         pending: this.configService.get<string>("MP_PENDING_URL")!,
       },
-      // auto_return: "approved",
+      auto_return: "approved",
+      purpose: "wallet_purchase"
     };
 
     // ✅ LOG #2: Ver EXACTAMENTE qué le mandas a Mercado Pago
