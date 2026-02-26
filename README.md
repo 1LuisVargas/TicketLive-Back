@@ -318,7 +318,9 @@ npm run test:cov
 **Luis Vargas**
 - GitHub: [@1LuisVargas](https://github.com/1LuisVargas)
 - LinkedIn: [@1LuisVargas](https://www.linkedin.com/in/1luisvargas/)
+
 **Laura Rojas**
 - GitHub: [@LrojasOsorio](https://github.com/LrojasOsorio)
+
 **Felipe Rosero**
 - GitHub: [@FMRoseroPlua](https://github.com/FMRoseroPlua)
