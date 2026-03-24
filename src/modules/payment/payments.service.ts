@@ -1,33 +1,33 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { MercadoPagoConfig, Preference } from "mercadopago";
-import { Coupon } from "../coupons/entities/coupon.entity";
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { Coupon } from '../coupons/entities/coupon.entity';
 
 @Injectable()
 export class CartPaymentService {
   private mpClient: MercadoPagoConfig;
 
   constructor(private readonly configService: ConfigService) {
-    const token = this.configService.get<string>("MP_ACCESS_TOKEN");
-    if (!token) throw new Error("MP_ACCESS_TOKEN no definida");
+    const token = this.configService.get<string>('MP_ACCESS_TOKEN');
+    if (!token) throw new Error('MP_ACCESS_TOKEN no definida');
 
     this.mpClient = new MercadoPagoConfig({ accessToken: token });
   }
 
   async createPreference(cart: any, coupon?: Coupon | null) {
     if (!cart?.items?.length) {
-      throw new BadRequestException("Carrito sin items");
+      throw new BadRequestException('Carrito sin items');
     }
 
     // ✅ LOG #1: Ver el carrito REAL (lo que viene de DB)
     console.log(
-      "🛒 CART FROM DB:",
+      '🛒 CART FROM DB:',
       cart.items.map((i: any) => ({
         title: i.event?.title,
         unitPrice: i.unitPrice,
         quantity: i.quantity,
         subtotal: i.subtotal,
-      }))
+      })),
     );
 
     const rawItems = cart.items.map((item: any) => {
@@ -35,31 +35,34 @@ export class CartPaymentService {
       const qty = Number(item.quantity);
 
       if (!Number.isFinite(unit) || unit < 0) {
-        throw new BadRequestException("Precio inválido en carrito");
+        throw new BadRequestException('Precio inválido en carrito');
       }
       if (!Number.isFinite(qty) || qty <= 0) {
-        throw new BadRequestException("Cantidad inválida en carrito");
+        throw new BadRequestException('Cantidad inválida en carrito');
       }
 
       return {
-        title: item.event?.title ?? "Item",
+        title: item.event?.title ?? 'Item',
         unit_price: Math.round(unit), // COP entero
         quantity: qty,
-        currency_id: "COP",
+        currency_id: 'COP',
       };
     });
 
-    const total = rawItems.reduce((sum, it) => sum + it.unit_price * it.quantity, 0);
-    console.log("🏷️ COUPON RECEIVED IN CHECKOUT:", coupon);
+    const total = rawItems.reduce(
+      (sum, it) => sum + it.unit_price * it.quantity,
+      0,
+    );
+    console.log('🏷️ COUPON RECEIVED IN CHECKOUT:', coupon);
 
     let discount = 0;
 
     if (coupon && coupon.isActive) {
       const value = Number(coupon.value);
 
-      if (coupon.type === "PERCENT") {
+      if (coupon.type === 'PERCENT') {
         discount = Math.round(total * (value / 100));
-      } else if (coupon.type === "FIXED") {
+      } else if (coupon.type === 'FIXED') {
         discount = Math.round(value);
       }
     }
@@ -91,28 +94,22 @@ export class CartPaymentService {
     const preferenceData = {
       items,
       back_urls: {
-        success: this.configService.get<string>("MP_SUCCESS_URL")!,
-        failure: this.configService.get<string>("MP_FAILURE_URL")!,
-        pending: this.configService.get<string>("MP_PENDING_URL")!,
+        success: this.configService.get<string>('MP_SUCCESS_URL')!,
+        failure: this.configService.get<string>('MP_FAILURE_URL')!,
+        pending: this.configService.get<string>('MP_PENDING_URL')!,
       },
-      auto_return: "approved",
-      purpose: "wallet_purchase"
+      auto_return: 'approved',
     };
 
     // ✅ LOG #2: Ver EXACTAMENTE qué le mandas a Mercado Pago
-    console.log("💳 MP ITEMS PAYLOAD:", items);
+    console.log('💳 MP ITEMS PAYLOAD:', items);
 
     const preference = await new Preference(this.mpClient).create({
       body: preferenceData,
     });
-
-    const mode = this.configService.get<string>("MP_MODE");
-
-    console.log("MP_MODE:", mode);
-    console.log("init_point:", preference.init_point);
-    console.log("sandbox_init_point:", preference.sandbox_init_point);
-
-    return preference.init_point;
+    const mode = this.configService.get<string>('MP_MODE');
+    return mode === 'sandbox' || mode === 'test'
+      ? preference.sandbox_init_point
+      : preference.init_point;
   }
 }
-
