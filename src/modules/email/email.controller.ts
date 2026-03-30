@@ -1,20 +1,13 @@
-import { Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-import { ConfigService } from "@nestjs/config";
-import { EmailService } from "./sendgrid.service";
+import { EmailService } from "./email.service";
 
 @ApiTags("Email Sending")
 @Controller("email")
 export class EmailController {
-  constructor(
-    private readonly emailService: EmailService,
-    private config: ConfigService
-  ) {}
+  constructor(private readonly emailService: EmailService) {}
 
-  @ApiOperation({
-    summary:
-      "Es unicamente una ruta de TEST, ingresa tu email y un mensaje y recibiras automáticamente un email",
-  })
+  @ApiOperation({ summary: "TEST: envía un email con un mensaje personalizado" })
   @Get("test")
   send_email(@Query("email") email: string, @Query("message") message: string) {
     return this.emailService.sendEmail(email, message);
@@ -27,17 +20,4 @@ export class EmailController {
       Math.floor(1000000000 + Math.random() * 9000000000).toString()
     );
   }
-
-  /*
-  @ApiOperation({
-    summary:
-      "Es unicamente una ruta de TEST, ingresa tu email y un mensaje y recibiras automáticamente un email (SendGrid)",
-  })
-  @Get("test-sendGrid")
-  sendGrid_email(
-    @Query("email") email: string,
-    @Query("message") message: string
-  ) {
-    return this.sendGridService.sendEmail(email, "Saludos", message);
-  }*/
 }
