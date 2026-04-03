@@ -1,4 +1,4 @@
-import { ApiProperty, OmitType, PartialType, PickType } from "@nestjs/swagger";
+import { ApiProperty, OmitType, PartialType, PickType } from '@nestjs/swagger';
 import {
   IsOptional,
   IsString,
@@ -6,75 +6,82 @@ import {
   IsNotEmpty,
   IsEmail,
   Length,
-  IsStrongPassword,
   Validate,
   IsUrl,
-} from "class-validator";
-import { MatchPassword } from "src/decorators/matchPassword.decorator";
+  Matches,
+} from 'class-validator';
+import { MatchPassword } from 'src/decorators/matchPassword.decorator';
 
 export class UserBaseDto {
   @ApiProperty({
-    description: "Nombre de usuario",
-    example: "User01",
+    description: 'Nombre de usuario',
+    example: 'User01',
   })
   @IsNotEmpty()
   @Length(1, 50)
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({
-    description: "Debe ser un email válido",
-    example: "user01@mail.com",
+    description: 'Debe ser un email válido',
+    example: 'user01@mail.com',
   })
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({
     description:
-      "La contraseña debe contener al menos una minúscula, una mayúscula, un número y uno de los siguientes caracteres especiales: !@#$%^&*",
-    example: "Abcd1234*",
+      'Mínimo 12 caracteres, una mayúscula, una minúscula, un número y un símbolo (!@#$%^&*)',
+    example: 'Abcd1234*Xyz!',
   })
   @IsNotEmpty()
   @IsString()
-  @Length(8, 15)
-  @IsStrongPassword({
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
+  @Length(12, 64, {
+    message: 'La contraseña debe tener entre 12 y 64 caracteres',
   })
-  password: string;
+  @Matches(/[a-z]/, {
+    message: 'La contraseña debe contener al menos una minúscula',
+  })
+  @Matches(/[A-Z]/, {
+    message: 'La contraseña debe contener al menos una mayúscula',
+  })
+  @Matches(/[0-9]/, {
+    message: 'La contraseña debe contener al menos un número',
+  })
+  @Matches(/[!@#$%^&*]/, {
+    message: 'La contraseña debe contener al menos un símbolo (!@#$%^&*)',
+  })
+  password!: string;
 
   @ApiProperty({
     description:
-      "La contraseña debe contener al menos una minúscula, una mayúscula, un número y uno de los siguientes caracteres especiales: !@#$%^&*",
-    example: "Abcd1234*",
+      'La confirmación de la contraseña debe ser igual a la anterior, mínimo 12 caracteres, una mayúscula, una minúscula, un número y un símbolo (!@#$%^&*)',
+    example: 'Abcd1234*',
   })
   @IsNotEmpty()
-  @Validate(MatchPassword, ["password"])
-  confirmPassword: string;
+  @Validate(MatchPassword, ['password'])
+  confirmPassword!: string;
 
   @ApiProperty({
-    description: "Debe ser un número telefónico con su codigo de area",
-    example: "593987654321",
-  })
-  @IsNotEmpty()
-  @IsString()
-  phone: string;
-
-  @ApiProperty({
-    description: "Dirección",
-    example: "Avenida siempre viva y Calle Falsa 123",
+    description: 'Debe ser un número telefónico con su codigo de area',
+    example: '593987654321',
   })
   @IsOptional()
   @IsString()
-  @Length(3, 80)
+  phone!: string;
+
+  @ApiProperty({
+    description: 'Dirección',
+    example: 'Avenida siempre viva y Calle Falsa 123',
+  })
+  @IsOptional()
+  @IsString()
   address?: string;
 
   @ApiProperty({
-    description: "Dirección",
-    example: "Avenida siempre viva y Calle Falsa 123",
+    description: 'Cedula de identidad',
+    example: '123456789',
   })
   @IsOptional()
   @IsString()
@@ -82,9 +89,9 @@ export class UserBaseDto {
   dni?: string;
 
   @ApiProperty({
-    description: "Debe ser una imagen de máximo 1MB",
+    description: 'Debe ser una imagen de máximo 1MB',
     example:
-      "https://res.cloudinary.com/dhm9f8fre/image/upload/v1766970191/profile-img_lghlfe.png",
+      'https://res.cloudinary.com/dhm9f8fre/image/upload/v1766970191/profile-img_lghlfe.png',
   })
   @IsOptional()
   @IsString()
@@ -92,8 +99,8 @@ export class UserBaseDto {
   profile_photo?: string;
 
   @ApiProperty({
-    description: "Fecha de nacimiento",
-    example: "01/01/2000",
+    description: 'Fecha de nacimiento',
+    example: '01/01/2000',
   })
   @IsOptional()
   @IsDateString()
@@ -101,21 +108,21 @@ export class UserBaseDto {
 }
 
 export class CreateUserDto extends PickType(UserBaseDto, [
-  "email",
-  "name",
-  "password",
-  "confirmPassword",
-  "address",
-  "phone",
+  'email',
+  'name',
+  'password',
+  'confirmPassword',
+  'address',
+  'phone',
 ] as const) {}
 
 export class LoginUserDto extends PickType(UserBaseDto, [
-  "email",
-  "password",
+  'email',
+  'password',
 ] as const) {}
 
 export class UpdateUserDto extends PartialType(
-  OmitType(UserBaseDto, ["password", "confirmPassword"] as const)
+  OmitType(UserBaseDto, ['password', 'confirmPassword'] as const),
 ) {
   @IsOptional()
   @IsString()
@@ -125,8 +132,8 @@ export class UpdateUserDto extends PartialType(
 
 export class BanUserDto {
   @ApiProperty({
-    description: "Razón por la cual se banea el usuario",
-    example: "Comentarios inapropiados",
+    description: 'Razón por la cual se banea el usuario',
+    example: 'Comentarios inapropiados',
   })
   @IsOptional()
   @IsString()
