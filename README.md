@@ -31,17 +31,17 @@
 
 ## 🛠️ Tech Stack
 
-| Layer          | Technology                              |
-|----------------|-----------------------------------------|
-| Framework      | NestJS, TypeScript                      |
-| Database       | PostgreSQL, TypeORM                     |
-| Authentication | JWT, Passport.js, Google OAuth          |
-| Payments       | MercadoPago                             |
-| File Storage   | Cloudinary                              |
-| Email          | Nodemailer (Gmail)                      |
-| Maps           | MapTiler                                |
-| Testing        | Jest                                    |
-| Deployment     | Node.js                                 |
+| Layer        | Technology                              |
+|--------------|-----------------------------------------|
+| Framework    | NestJS, TypeScript                      |
+| Auth         | Passport.js, JWT                        |
+| ORM          | TypeORM                                 |
+| Database     | Supabase (PostgreSQL)                   |
+| Email        | Nodemailer, Resend, SendGrid            |
+| Media        | Cloudinary                              |
+| Payments     | MercadoPago                             |
+| Deployment   | Render                                  |
+| Monitoring   | UptimeRobot                             |
 
 ---
 
