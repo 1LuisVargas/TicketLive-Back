@@ -40,6 +40,7 @@
 | Email        | Nodemailer, Resend, SendGrid            |
 | Media        | Cloudinary                              |
 | Payments     | MercadoPago                             |
+| API Docs     | Swagger                                 |
 | Deployment   | Render                                  |
 | Monitoring   | UptimeRobot                             |
 
@@ -195,6 +196,15 @@ npm run start:prod
 The API will be available at `http://localhost:3000`.
 
 > **Tip:** Make sure your PostgreSQL instance is running and the credentials in `.env` are correct before starting the server.
+
+---
+
+## 📖 API Documentation
+
+Interactive API documentation is available via Swagger UI:
+
+- **Production:** [https://ticketlive-back.onrender.com/api](https://ticketlive-back.onrender.com/api)
+- **Local:** `http://localhost:3000/api`
 
 ---
 
