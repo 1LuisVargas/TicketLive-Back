@@ -13,7 +13,12 @@ import {
 import { UsersService } from './users.service';
 import { BanUserDto, UpdateUserDto } from './dto/users.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/roles.enum';
@@ -38,6 +43,9 @@ export class UsersController {
     type: String,
     description: 'Elementos por página',
   })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth('jwt-auth')
   @Get()
   getAllUsers(@Query('page') page: string, @Query('limit') limit: string) {
     const pageNum = Number(page);
@@ -47,8 +55,6 @@ export class UsersController {
     return this.usersService.getAllUsers(validPage, validlimit);
   }
 
-  // @ApiBearerAuth("jwt-auth")
-  // @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Permite obtener toda la información referente a un usuario',
   })
@@ -69,6 +75,9 @@ export class UsersController {
     summary: 'Permite eliminar un usuario por su id',
   })
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth('jwt-auth')
   deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }
@@ -78,6 +87,7 @@ export class UsersController {
   })
   @Patch(':id/ban')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('jwt-auth')
   @Roles(Role.ADMIN)
   banUser(@Param('id') id: string, @Body() dto: BanUserDto) {
     return this.usersService.banUser(id, dto.reason);
@@ -88,6 +98,7 @@ export class UsersController {
   })
   @Patch(':id/unban')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('jwt-auth')
   @Roles(Role.ADMIN)
   unbanUser(@Param('id') id: string) {
     return this.usersService.unbanUser(id);

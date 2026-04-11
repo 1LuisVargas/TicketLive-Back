@@ -18,7 +18,7 @@ import { RolesGuard } from 'src/roles/roles.guard';
 import { ClaimCouponDto } from './dtos/claim_coupon.dto';
 import { ConfirmCouponDto } from './dtos/confirm_coupon.dto';
 import { CreateCouponDto } from './dtos/create_coupon.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/roles.enum';
 import { UpdateCouponDto } from './dtos/update_coupon.dto';
@@ -33,6 +33,7 @@ export class CouponsController {
       'Permite que un usuario autenticado reclame un cupón disponible usando un código.',
   })
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('jwt-auth')
   @Post('claim')
   async claim(@Req() req, @Body() dto: ClaimCouponDto) {
     return this.couponsService.claimCoupon(dto.code, req.user.id, dto.cartId);
@@ -43,6 +44,7 @@ export class CouponsController {
       'Permite que un usuario autenticado confirme el uso de un cupón previamente reclamado.',
   })
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('jwt-auth')
   @Post('confirm')
   async confirm(@Req() req, @Body() dto: ConfirmCouponDto) {
     return this.couponsService.confirmCoupon(dto.cartId, req.user.id);
@@ -52,6 +54,8 @@ export class CouponsController {
     summary: 'Permite que un administrador cree un nuevo cupón',
   })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('jwt-auth')
+  @Roles(Role.ADMIN)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   @Post()
   async create(@Body() dto: CreateCouponDto) {
@@ -60,7 +64,7 @@ export class CouponsController {
 
   @ApiOperation({
     summary:
-      'Permite que un administrador obtenga la lista completa de cupones.',
+      'Permite que cualquier usuario obtenga la lista completa de cupones.',
   })
   @Get()
   async getAll() {
@@ -73,6 +77,7 @@ export class CouponsController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @ApiBearerAuth('jwt-auth')
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateCouponDto: UpdateCouponDto,
@@ -85,6 +90,7 @@ export class CouponsController {
   })
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth('jwt-auth')
   @Roles(Role.ADMIN)
   async remove(
     @Param('id', new ParseUUIDPipe()) id: string,

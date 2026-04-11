@@ -7,20 +7,26 @@ import {
   Param,
   Req,
   UseGuards,
-} from "@nestjs/common";
-import { CartService } from "./cart.service";
-import { JwtAuthGuard } from "../auth/guard/jwt-auth.guard";
-import { AddCartItemDto } from "./dto/add-cart-item.dto";
-import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
+} from '@nestjs/common';
+import { CartService } from './cart.service';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { AddCartItemDto } from './dto/add-cart-item.dto';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
-@ApiTags("Cart")
-@Controller("cart")
+@ApiTags('Cart')
+@Controller('cart')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('jwt-auth')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @ApiOperation({
-    summary: "Permite obtener el carrito del usuario",
+    summary: 'Permite obtener el carrito del usuario',
   })
   @Get()
   async getMyCart(@Req() req) {
@@ -29,39 +35,39 @@ export class CartController {
   }
 
   @ApiOperation({
-    summary: "Permite agregar un item al carrito de un usuario",
+    summary: 'Permite agregar un item al carrito de un usuario',
   })
-  @Post("items")
+  @Post('items')
   async addItemToCart(@Req() req, @Body() addCartItemDto: AddCartItemDto) {
     const user = req.user;
 
     return this.cartService.addItemToCart(
       user,
       addCartItemDto.eventId,
-      addCartItemDto.quantity
+      addCartItemDto.quantity,
     );
   }
 
   @ApiOperation({
-    summary: "Permite eliminar un item del carrito del usuario",
+    summary: 'Permite eliminar un item del carrito del usuario',
   })
   @ApiParam({
-    name: "cartItemId",
-    description: "ID del item del carrito a eliminar",
+    name: 'cartItemId',
+    description: 'ID del item del carrito a eliminar',
   })
-  @Delete("items/:cartItemId")
+  @Delete('items/:cartItemId')
   async removeItemFromCart(
     @Req() req,
-    @Param("cartItemId") cartItemId: string
+    @Param('cartItemId') cartItemId: string,
   ) {
     const user = req.user;
     return this.cartService.removeItemFromCart(user, cartItemId);
   }
 
   @ApiOperation({
-    summary: "Permite vaciar el carrito",
+    summary: 'Permite vaciar el carrito',
   })
-  @Delete(":id")
+  @Delete()
   async clearCart(@Req() req) {
     const user = req.user;
     return this.cartService.clearCart(user);
