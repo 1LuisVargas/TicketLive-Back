@@ -67,7 +67,7 @@ export class CreateEventDto {
   @IsUUID()
   categoryId: string;
 
-  ApiPropertyOptional({ example: '-12.123456' })
+  @ApiPropertyOptional({ example: '-12.123456' })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
@@ -75,7 +75,7 @@ export class CreateEventDto {
   @Max(90)
   latitude?: number;
 
-  ApiPropertyOptional({ example: '-12.123456' })
+  @ApiPropertyOptional({ example: '-12.123456' })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
