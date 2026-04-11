@@ -9,44 +9,37 @@ import {
   ParseUUIDPipe,
   Query,
   Delete,
-} from "@nestjs/common";
-import { UsersService } from "./users.service";
-import { BanUserDto, UpdateUserDto } from "./dto/users.dto";
-import { JwtAuthGuard } from "../auth/guard/jwt-auth.guard";
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from "@nestjs/swagger";
-import { UUID } from "typeorm/driver/mongodb/bson.typings.js";
-import { User } from "./entities/users.entity";
-import { RolesGuard } from "src/roles/roles.guard";
-import { Roles } from "src/roles/roles.decorator";
-import { Role } from "src/roles/roles.enum";
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { BanUserDto, UpdateUserDto } from './dto/users.dto';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { Roles } from 'src/roles/roles.decorator';
+import { Role } from 'src/roles/roles.enum';
 
-@ApiTags("Users")
-@Controller("users")
+@ApiTags('Users')
+@Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({
-    summary: "Permite obtener todos los usuarios",
+    summary: 'Permite obtener todos los usuarios',
   })
   @ApiQuery({
-    name: "page",
+    name: 'page',
     required: false,
     type: String,
-    description: "Número de página",
+    description: 'Número de página',
   })
   @ApiQuery({
-    name: "limit",
+    name: 'limit',
     required: false,
     type: String,
-    description: "Elementos por página",
+    description: 'Elementos por página',
   })
   @Get()
-  getAllUsers(@Query("page") page: string, @Query("limit") limit: string) {
+  getAllUsers(@Query('page') page: string, @Query('limit') limit: string) {
     const pageNum = Number(page);
     const limitNum = Number(limit);
     const validPage = !isNaN(pageNum) && pageNum > 0 ? pageNum : 1;
@@ -57,46 +50,46 @@ export class UsersController {
   // @ApiBearerAuth("jwt-auth")
   // @UseGuards(JwtAuthGuard)
   @ApiOperation({
-    summary: "Permite obtener toda la información referente a un usuario",
+    summary: 'Permite obtener toda la información referente a un usuario',
   })
-  @Get("profile/:id")
-  getProfile(@Req() req, @Param("id") id: string) {
+  @Get('profile/:id')
+  getProfile(@Req() req, @Param('id') id: string) {
     return this.usersService.findById(id);
   }
 
   @ApiOperation({
-    summary: "Permite actulizar los datos de un usuario",
+    summary: 'Permite actualizar los datos de un usuario',
   })
-  @Patch(":id")
-  updateProfile(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Patch(':id')
+  updateProfile(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateProfile(id, updateUserDto);
   }
 
   @ApiOperation({
-    summary: "Permite eliminar un usuario por su id",
+    summary: 'Permite eliminar un usuario por su id',
   })
-  @Delete(":id")
-  deleteUser(@Param("id", ParseUUIDPipe) id: string) {
+  @Delete(':id')
+  deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }
 
   @ApiOperation({
-    summary: "Permite banear un usuario por su id",
+    summary: 'Permite banear un usuario por su id',
   })
-  @Patch(":id/ban")
+  @Patch(':id/ban')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  banUser(@Param("id") id: string, @Body() dto: BanUserDto) {
+  banUser(@Param('id') id: string, @Body() dto: BanUserDto) {
     return this.usersService.banUser(id, dto.reason);
   }
 
   @ApiOperation({
-    summary: "Permite desbanear un usuario por su id",
+    summary: 'Permite desbanear un usuario por su id',
   })
-  @Patch(":id/unban")
+  @Patch(':id/unban')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  unbanUser(@Param("id") id: string) {
+  unbanUser(@Param('id') id: string) {
     return this.usersService.unbanUser(id);
   }
 }
