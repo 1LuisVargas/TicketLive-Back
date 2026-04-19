@@ -4,14 +4,6 @@
 
 ---
 
-<!-- TO BE UPDATED WITH SCREENSHOTS OF THE PROJECT
-## 📸 Screenshots
-
-> _Add screenshots here — e.g. API docs (Swagger), database schema, or architecture diagram._
-
----
--->
-
 ## ✨ Features
 
 - **Authentication** — JWT-based auth with Google OAuth support, role-based access control, and password reset via email
@@ -31,18 +23,19 @@
 
 ## 🛠️ Tech Stack
 
-| Layer        | Technology                              |
-|--------------|-----------------------------------------|
-| Framework    | NestJS, TypeScript                      |
-| Auth         | Passport.js, JWT                        |
-| ORM          | TypeORM                                 |
-| Database     | Supabase (PostgreSQL)                   |
-| Email        | Nodemailer, Resend, SendGrid            |
-| Media        | Cloudinary                              |
-| Payments     | MercadoPago                             |
-| API Docs     | Swagger                                 |
-| Deployment   | Render                                  |
-| Monitoring   | UptimeRobot                             |
+| Layer | Technology |
+|--------------|------------------------------------------------------|
+| **Framework** | NestJS, TypeScript |
+| **Auth** | Passport.js, JWT |
+| **ORM** | TypeORM |
+| **Database** | Supabase (PostgreSQL) |
+| **Email** | Nodemailer (Gmail SMTP) |
+| **Media** | Cloudinary |
+| **Payments** | MercadoPago |
+| **Secrets** | Infisical (Production) |
+| **API Docs** | Swagger |
+| **Deployment** | Render |
+| **Monitoring** | UptimeRobot |
 
 ---
 
@@ -89,8 +82,6 @@ TicketLive-Back/
 
 ### Prerequisites
 
-Make sure you have the following installed:
-
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
 - [npm](https://www.npmjs.com/)
 - [PostgreSQL](https://www.postgresql.org/)
@@ -116,7 +107,7 @@ npm install
 
 ### 3. Configure Environment Variables
 
-Create a `.env` file in the root of the project and fill in your values:
+This project uses [Infisical](https://infisical.com) for secrets management in production. For local development, create a `.env` file based on the provided template, and then fill in your own values:
 
 ```env
 # Cloudinary
@@ -124,7 +115,7 @@ CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 CLOUDINARY_CLOUD_NAME=
 
-# Front
+# Frontend
 FRONTEND_URL=
 FRONT_CALLBACK=/
 
@@ -153,10 +144,11 @@ MP_FAILURE_URL=FRONTEND_URL/payment-failure
 MP_PENDING_URL=FRONTEND_URL/payment-pending
 
 # Gmail — Sending Email
-MAIL_HOST=
-MAIL_PORT=
-MAIL_USER=
-MAIL_PASS=
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=your_gmail_address
+MAIL_PASS=your_gmail_app_password  # 16-char app password — NOT your Gmail password
+                                    # Generate one at: myaccount.google.com/apppasswords
 
 # MapTiler
 MAPTILER_API_KEY=
@@ -213,98 +205,98 @@ Interactive API documentation is available via Swagger UI:
 > Base URL: `http://localhost:3000`
 
 ### 🔐 Auth
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| POST   | `/auth/signup`              | Register a new user                 |
-| POST   | `/auth/signin`              | Log in and receive a JWT token      |
-| GET    | `/auth/google`              | Initiate Google OAuth login         |
-| GET    | `/auth/google/callback`     | Google OAuth callback               |
-| POST   | `/auth/signout`             | Log out and clear cookies           |
-| POST   | `/auth/forgot-password`     | Send a password reset email         |
-| POST   | `/auth/reset-password`      | Reset password using email token    |
-| POST   | `/auth/change-password`     | Change password from inside the app |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| POST | `/auth/signup` | Register a new user |
+| POST | `/auth/signin` | Log in and receive a JWT token |
+| GET | `/auth/google` | Initiate Google OAuth login |
+| GET | `/auth/google/callback` | Google OAuth callback |
+| POST | `/auth/signout` | Log out and clear cookies |
+| POST | `/auth/forgot-password` | Send a password reset email |
+| POST | `/auth/reset-password` | Reset password using email token |
+| POST | `/auth/change-password` | Change password from inside the app |
 
 ### 🎫 Events
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| GET    | `/events`                   | Get all events                      |
-| GET    | `/events/:id`               | Get a single event by ID            |
-| POST   | `/events`                   | Create a new event (admin)          |
-| PATCH  | `/events/:id`               | Update an event (admin)             |
-| DELETE | `/events/:id`               | Delete an event (admin)             |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/events` | Get all events |
+| GET | `/events/:id` | Get a single event by ID |
+| POST | `/events` | Create a new event (admin) |
+| PATCH | `/events/:id` | Update an event (admin) |
+| DELETE | `/events/:id` | Delete an event (admin) |
 
 ### 🛒 Cart
-| Method | Endpoint                      | Description                       |
-|--------|-------------------------------|-----------------------------------|
-| GET    | `/cart`                       | Get the current user's cart       |
-| POST   | `/cart/items`                 | Add an item to the cart           |
-| DELETE | `/cart/items/:cartItemId`     | Remove an item from the cart      |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/cart` | Get the current user's cart |
+| POST | `/cart/items` | Add an item to the cart |
+| DELETE | `/cart/items/:cartItemId` | Remove an item from the cart |
 
 ### 📁 Categories
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| GET    | `/categories`               | Get all categories                  |
-| GET    | `/categories/:id`           | Get a single category by ID         |
-| POST   | `/categories`               | Create a new category               |
-| PATCH  | `/categories/:id`           | Update a category by ID             |
-| DELETE | `/categories/:id`           | Delete a category by ID             |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/categories` | Get all categories |
+| GET | `/categories/:id` | Get a single category by ID |
+| POST | `/categories` | Create a new category |
+| PATCH | `/categories/:id` | Update a category by ID |
+| DELETE | `/categories/:id` | Delete a category by ID |
 
 ### 📦 Orders
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| GET    | `/orders`                   | Get orders for the current user     |
-| GET    | `/orders/:id`               | Get a single order by ID            |
-| POST   | `/orders`                   | Place a new order                   |
-| PATCH  | `/orders/:id`               | Update an order by ID               |
-| DELETE | `/orders/:id`               | Delete an order by ID               |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/orders` | Get orders for the current user |
+| GET | `/orders/:id` | Get a single order by ID |
+| POST | `/orders` | Place a new order |
+| PATCH | `/orders/:id` | Update an order by ID |
+| DELETE | `/orders/:id` | Delete an order by ID |
 
 ### 💳 Payments
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| POST   | `/checkout`                 | Process a payment                   |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| POST | `/checkout` | Process a payment |
 
 ### 🏷️ Coupons
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| GET    | `/coupons`                  | Get all coupons (admin)             |
-| POST   | `/coupons`                  | Create a new coupon (admin)         |
-| PATCH  | `/coupons/:id`              | Update a coupon (admin)             |
-| DELETE | `/coupons/:id`              | Delete a coupon (admin)             |
-| POST   | `/coupons/claim`            | Claim a coupon                      |
-| POST   | `/coupons/confirm`          | Confirm a coupon has been used      |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/coupons` | Get all coupons (admin) |
+| POST | `/coupons` | Create a new coupon (admin) |
+| PATCH | `/coupons/:id` | Update a coupon (admin) |
+| DELETE | `/coupons/:id` | Delete a coupon (admin) |
+| POST | `/coupons/claim` | Claim a coupon |
+| POST | `/coupons/confirm` | Confirm a coupon has been used |
 
 ### 👤 Users
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| GET    | `/users`                    | Get all users (admin)               |
-| GET    | `/users/:id`                | Get a user by ID                    |
-| PATCH  | `/users/:id`                | Update a user by ID                 |
-| DELETE | `/users/:id`                | Delete a user by ID (admin)         |
-| PATCH  | `/users/:id/ban`            | Ban a user (admin)                  |
-| PATCH  | `/users/:id/unban`          | Unban a user (admin)                |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/users` | Get all users (admin) |
+| GET | `/users/:id` | Get a user by ID |
+| PATCH | `/users/:id` | Update a user by ID |
+| DELETE | `/users/:id` | Delete a user by ID (admin) |
+| PATCH | `/users/:id/ban` | Ban a user (admin) |
+| PATCH | `/users/:id/unban` | Unban a user (admin) |
 
 ### 📬 Subscribers
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| POST   | `/subscribers`              | Subscribe to the newsletter         |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| POST | `/subscribers` | Subscribe to the newsletter |
 
 ### 💬 Comments
-| Method | Endpoint                    | Description                         |
-|--------|-----------------------------|-------------------------------------|
-| GET    | `/comments`                 | Get all comments                    |
-| POST   | `/comments`                 | Post a comment                      |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/comments` | Get all comments |
+| POST | `/comments` | Post a comment |
 
 ### 📧 Email
-| Method | Endpoint                        | Description                      |
-|--------|---------------------------------|----------------------------------|
-| GET    | `/email/test`                   | Testing route                    |
-| POST   | `/email/successPurchase`        | Send a purchase confirmation     |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| GET | `/email/test` | Testing route |
+| POST | `/email/successPurchase` | Send a purchase confirmation |
 
 ### 🗃️ File Upload
-| Method | Endpoint                              | Description                  |
-|--------|---------------------------------------|------------------------------|
-| POST   | `/file-upload/profileImage/:id`       | Upload a profile image       |
-| POST   | `/file-upload/upload`                 | Upload an event image        |
+| Method | Endpoint | Description |
+|--------|-------------------------------|-------------------------------------|
+| POST | `/file-upload/profileImage/:id` | Upload a profile image |
+| POST | `/file-upload/upload` | Upload an event image |
 
 ---
 
